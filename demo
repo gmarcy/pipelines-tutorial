@@ -87,15 +87,13 @@ demo.logs() {
 
 demo.run() {
   TKN pipeline start build-and-deploy \
-    -r api-repo=api-repo \
-    -r api-image=api-image \
-    -r ui-repo=ui-repo \
-    -r ui-image=ui-image
+    -r sample-repo=sample-repo \
+    -r sample-image=sample-image
 }
 
 demo.url() {
   echo "Click following URL to access the application"
-  oc -n $NAMESPACE get route ui --template='http://{{.spec.host}}'
+  oc -n $NAMESPACE get route sample --template='http://{{.spec.host}}'
 }
 
 demo.help() {

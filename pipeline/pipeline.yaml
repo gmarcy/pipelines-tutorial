@@ -4,89 +4,46 @@ metadata:
   name: build-and-deploy
 spec:
   resources:
-    - name: api-repo
+    - name: sample-repo
       type: git
-    - name: api-image
-      type: image
-    - name: ui-repo
-      type: git
-    - name: ui-image
+    - name: sample-image
       type: image
 
   tasks:
-    - name: build-api
+    - name: build-sample
       taskRef:
         name: buildah
         kind: ClusterTask
       resources:
         inputs:
           - name: source
-            resource: api-repo
+            resource: sample-repo
         outputs:
           - name: image
-            resource: api-image
+            resource: sample-image
       params:
         - name: TLSVERIFY
           value: "false"
 
-    - name: apply-api-manifests
+    - name: apply-sample-manifests
       taskRef:
         name: apply-manifests
       resources:
         inputs:
           - name: source
-            resource: api-repo
+            resource: sample-repo
       runAfter:
-        - build-api
+        - build-sample
 
-    - name: update-api-image
+    - name: update-sample-image
       taskRef:
         name: update-deployment
       resources:
         inputs:
           - name: image
-            resource: api-image
+            resource: sample-image
       params:
         - name: deployment
-          value: "api"
+          value: "sample"
       runAfter:
-        - apply-api-manifests
-
-    - name: build-ui
-      taskRef:
-        name: s2i-python-3
-        kind: ClusterTask
-      resources:
-        inputs:
-          - name: source
-            resource: ui-repo
-        outputs:
-          - name: image
-            resource: ui-image
-      params:
-        - name: TLSVERIFY
-          value: "false"
-
-    - name: apply-ui-manifests
-      taskRef:
-        name: apply-manifests
-      resources:
-        inputs:
-          - name: source
-            resource: ui-repo
-      runAfter:
-        - build-ui
-        - update-api-image
-
-    - name: update-ui-image
-      taskRef:
-        name: update-deployment
-      resources:
-        inputs:
-          - name: image
-            resource: ui-image
-      params:
-        - name: deployment
-          value: "ui"
-      runAfter:
-        - apply-ui-manifests
+        - apply-sample-manifests

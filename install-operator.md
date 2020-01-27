@@ -6,7 +6,11 @@ To start, make sure you are on the **Administrator** perspective as shown below:
 
 ![Administrator Perspective](images/administrator.png)
 
-Go to **Operators > OperatorHub** in the Web Console. You can see the list of available operators for OpenShift provided by Red Hat as well as a community of partners and open-source projects.
+Go to **Administration > Namespaces** in the Web Console. Create a new namespace named `openshift-pipelines`. This is where the OpenShift Pipelines Operator Pods will run by default.
+
+![Create a Namespace](images/namespaces.png)
+
+Go to **Operators > OperatorHub** in the Web Console and select the `openshift-pipelines` project from the top. You can see the list of available operators for OpenShift provided by Red Hat as well as a community of partners and open-source projects.
 
 ![OpenShift OperatorHub](images/operatorhub.png)
 
@@ -26,10 +30,3 @@ After clicking **Subscribe**, you will be taken to the **Installed Operators** p
 
 ![OpenShift Pipelines Operator 3](images/operator-install-3.png)
 
-Click on **OpenShift Pipelines Operator** under the `Name` column and then click on **Create Instance**:
-
-![OpenShift Pipelines Operator 4](images/operator-install-4.png)
-
-Leave the default values in the **Create Config** editor and click **Create**.
-
-That's all. The operator now installs OpenShift Pipelines on the cluster.

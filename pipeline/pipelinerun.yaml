@@ -6,15 +6,9 @@ spec:
   pipelineRef:
     name: build-and-deploy
   resources:
-    - name: api-repo
+    - name: sample-repo
       resourceRef:
-        name: api-repo
-    - name: api-image
+        name: sample-repo
+    - name: sample-image
       resourceRef:
-        name: api-image
-    - name: ui-repo
-      resourceRef:
-        name: ui-repo
-    - name: ui-image
-      resourceRef:
-        name: ui-image
+        name: sample-image
