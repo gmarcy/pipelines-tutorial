@@ -22,6 +22,8 @@ spec:
           - name: image
             resource: sample-image
       params:
+        - name: CONTEXT
+          value: "samples/hello-world"
         - name: TLSVERIFY
           value: "false"
 

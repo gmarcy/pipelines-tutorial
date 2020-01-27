@@ -1,0 +1,84 @@
+apiVersion: tekton.dev/v1alpha1
+kind: ClusterTask
+metadata:
+  annotations:
+    manifestival: new
+  creationTimestamp: "2020-01-27T16:51:36Z"
+  generation: 1
+  name: buildah
+  ownerReferences:
+  - apiVersion: operator.tekton.dev/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Config
+    name: cluster
+    uid: 2c27723c-4125-11ea-be4c-0ef0e3c74fbe
+  resourceVersion: "83510"
+  selfLink: /apis/tekton.dev/v1alpha1/clustertasks/buildah
+  uid: 48033511-4125-11ea-be4c-0ef0e3c74fbe
+spec:
+  inputs:
+    params:
+    - default: quay.io/buildah/stable:v1.11.0
+      description: The location of the buildah builder image.
+      name: BUILDER_IMAGE
+      type: string
+    - name: CONTEXT
+      default: "."
+      description: Path to the directory to use as context 
+      type: string
+    - default: ./Dockerfile
+      description: Path to the Dockerfile to build.
+      name: DOCKERFILE
+      type: string
+    - default: "true"
+      description: Verify the TLS on the registry endpoint (for push/pull to a non-TLS
+        registry)
+      name: TLSVERIFY
+      type: string
+    resources:
+    - name: source
+      type: git
+  outputs:
+    resources:
+    - name: image
+      outputImageDir: /builder/home/image-outputs/image
+      type: image
+  steps:
+  - command:
+    - buildah
+    - bud
+    - --tls-verify=$(inputs.params.TLSVERIFY)
+    - --layers
+    - -f
+    - $(inputs.params.DOCKERFILE)
+    - -t
+    - $(outputs.resources.image.url)
+    - $(inputs.params.CONTEXT)
+    image: $(inputs.params.BUILDER_IMAGE)
+    name: build
+    resources: {}
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /var/lib/containers
+      name: varlibcontainers
+    workingDir: /workspace/source
+  - command:
+    - buildah
+    - push
+    - --tls-verify=$(inputs.params.TLSVERIFY)
+    - $(outputs.resources.image.url)
+    - docker://$(outputs.resources.image.url)
+    image: $(inputs.params.BUILDER_IMAGE)
+    name: push
+    resources: {}
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /var/lib/containers
+      name: varlibcontainers
+    workingDir: /workspace/source
+  volumes:
+  - emptyDir: {}
+    name: varlibcontainers
